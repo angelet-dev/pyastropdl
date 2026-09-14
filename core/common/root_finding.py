@@ -1,9 +1,10 @@
 from collections.abc import Callable
 
-from numba import njit
+from numpy import nan
+
+__all__ = ["halley_method"]
 
 
-@njit(cache=True)
 def halley_method(
     func: Callable[..., float],
     func_args: tuple,
@@ -25,16 +26,16 @@ def halley_method(
         f_left = func(ti - eps, func_args)
         f_right = func(ti + eps, func_args)
 
-        F_dx = (f_right - f_left) / (2.0 * eps)
-        F_ddx = (f_right - 2.0 * f_val + f_left) / (eps**2)
+        f_dx = (f_right - f_left) / (2.0 * eps)
+        f_ddx = (f_right - 2.0 * f_val + f_left) / (eps**2)
 
-        denominator = 2.0 * (F_dx**2) - f_val * F_ddx
+        denominator = 2.0 * (f_dx**2) - f_val * f_ddx
 
         
         if abs(denominator) < 1e-12:
-            break
+            return nan
 
-        ti += -(2.0 * f_val * F_dx) / denominator
+        ti += -(2.0 * f_val * f_dx) / denominator
 
         if ti >= t_max:
             ti = t_max
@@ -43,4 +44,4 @@ def halley_method(
             ti = t_min
             t_min += 0.1
 
-    return ti
+    return nan

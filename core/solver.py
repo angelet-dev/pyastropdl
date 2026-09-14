@@ -1,36 +1,37 @@
 import numpy as np
 
-from .shooting_methods import residual_func, shoot_trajectory_kernel, strike_methods
+from .common.residuals import residual_func, altitude_residual_dynamic, altitude_residual_static, velocity_residual_dynamic, velocity_residual_static
+from .solvers import shooting_method
+from .simulation_engine import dynamic_g as dg
 
 
 class LunarSystemSolver:
     def __init__(self, init_cond: list, end_cond: list, args: list):
+
         self.init_cond = np.array(init_cond, dtype=np.float64)  # [m0, v0, h0]
         self.end_cond = np.array(end_cond, dtype=np.float64)    # [vtau, htau]
 
-        drym = init_cond[0] - args[2] + args[0] * args[1]
+        drym = init_cond[0] - args[2] 
         self.phys_params = (float(args[0]), float(args[1]), float(drym))  # (thrust, k, drym)
 
         self.state_history = None
-        self.free_fall_phase = np.zeros((4, 1), dtype=np.float64)
-
-        self.is_dynamic_g = False
-        self.dt = 1.0
+        self.free_fall_phase = None
 
         self.final_vel = None
         self.final_alt = None
 
-    def solve(self, is_dynamic_g: bool = False, dt: float = 1.0, eps: float = 1e-5):
-        self.is_dynamic_g = is_dynamic_g
+    def solve(self, sim_engine: str = 'static_g', dt: float = 1.0, eps: float = 1e-5):
+        self.sim_engine = sim_engine
         self.dt = dt
-        self.state_history = strike_methods(
-            self.init_cond, self.end_cond, self.phys_params, self.is_dynamic_g, self.dt, eps
+
+        self.state_history = shooting_method(
+            self.init_cond, self.end_cond, self.phys_params, sim_engine, dt, eps
         )
 
-
         if self.state_history is None:
-            print("System has no solution.")
+            # print("System has no solution.")
             return None
+        
         return self.state_history
 
     def print_results(self):
@@ -55,25 +56,32 @@ class LunarSystemSolver:
         """
         print(results)
 
-    def find_residuals_func(self, is_dynamic_g: bool, dt: float):
-        self.is_dynamic_g = is_dynamic_g
+    def find_residuals(self, sim_engine: str = 'static_g', dt: float = 1.0):
+
+        self.sim_engine = sim_engine
         self.dt = dt
 
-        if np.array_equal(self.free_fall_phase, np.zeros((4, 1), dtype=np.float64)) and self.is_dynamic_g:
-            self.free_fall_phase = shoot_trajectory_kernel(
-                0.0,
-                self.init_cond,
-                self.end_cond,
-                self.phys_params,
-                mode=1,
-                is_brake=False,
-                is_dynamic_g=True,
-                dt=self.dt,
-            )
+        match sim_engine:
+            case 'static_g':
 
-        self.final_vel = residual_func(
-            self.is_dynamic_g, 1, self.init_cond, self.end_cond, self.free_fall_phase, self.phys_params, dt
-        )
-        self.final_alt = residual_func(
-            self.is_dynamic_g, 0, self.init_cond, self.end_cond, self.free_fall_phase, self.phys_params, dt
-        )
+                # init state, end state, phys params, dt
+                func_args = (self.init_cond, self.end_cond, self.phys_params, dt)
+
+                self.final_vel = residual_func(velocity_residual_static, func_args, dt)
+
+                self.final_alt = residual_func(altitude_residual_static, func_args, dt)
+
+                return True
+
+            case 'dynamic_g':
+
+                self.free_fall_phase = dg.get_ff_phase(self.init_cond, self.phys_params, self.dt)
+
+                # free fall phase, end state, phys params, dt
+                func_args = (self.free_fall_phase, self.end_cond, self.phys_params, dt)
+
+                self.final_vel = residual_func(velocity_residual_dynamic, func_args, dt)
+
+                self.final_alt = residual_func(altitude_residual_dynamic, func_args, dt)
+
+                return True
