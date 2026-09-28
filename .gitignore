@@ -4,7 +4,18 @@ __pycache__/
 
 test.py
 
-venv/
-.venv/
+results/
 
-*.png
+task.txt
+
+.vscode/
+
+.pypdl_venv/
+dist/
+
+test_presets/
+
+test_run.py
+test_run.ipynb
+
+pyastropdl.egg-info/
