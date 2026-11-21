@@ -82,17 +82,11 @@ def get_terminal_state(
 
         rk4_bp_inplace(curr_state, prev_state, phys_params, g, dt)
 
-        if mode == 0:
-            if (curr_state[1] - end_state[0]) * (prev_state[1] - end_state[0]) <= 0:
-                lerp_inplace(curr_state, prev_state, end_state, mode)
-                return (curr_state, True)
-        elif mode == 1:
-            if (curr_state[2] - end_state[1]) * (prev_state[2] - end_state[1]) <= 0:
-                lerp_inplace(curr_state, prev_state, end_state, mode)
-                return (curr_state, True)
+        if (curr_state[1 + mode] - end_state[mode]) * (prev_state[1+ mode] - end_state[mode]) <= 0:
+            lerp_inplace(curr_state, prev_state, end_state, mode)
+            return (curr_state, True)
 
-        elif curr_state[2] < 0 and curr_state[0] <= drym:    
-        # elif curr_state[1] < prev_state[1] and curr_state[0] <= drym:
+        if curr_state[2] < 0 and curr_state[0] <= drym:    
             return (curr_state, False)
 
     return (curr_state, False)
@@ -129,18 +123,13 @@ def get_trajectory(
 
         rk4_bp_inplace(curr_state, prev_state, phys_params, g, dt)
 
-        if mode == 0:
-            if (curr_state[1] - end_state[0]) * (prev_state[1] - end_state[0]) <= 0:
-                lerp_inplace(curr_state, prev_state, end_state, mode)
-                state_history[:, curr_shift] = curr_state
-                return (state_history[:, : curr_shift + 1], True)
-        elif mode == 1:
-            if (curr_state[2] - end_state[1]) * (prev_state[2] - end_state[1]) <= 0:
-                lerp_inplace(curr_state, prev_state, end_state, mode)
-                state_history[:, curr_shift] = curr_state
-                return (state_history[:, : curr_shift + 1], True)
 
-        elif curr_state[2] < 0 and curr_state[0] <= drym:
+        if (curr_state[1+ mode] - end_state[mode]) * (prev_state[1+ mode] - end_state[mode]) <= 0:
+            lerp_inplace(curr_state, prev_state, end_state, mode)
+            state_history[:, curr_shift] = curr_state
+            return (state_history[:, : curr_shift + 1], True)
+
+        if curr_state[2] < 0 and curr_state[0] <= drym:
             state_history[:, curr_shift] = curr_state
             return (state_history[:, : curr_shift + 1], False)
 
