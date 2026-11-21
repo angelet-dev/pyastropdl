@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pyastropdl"
-version = "0.9.0"
+version = "0.9.1"
 description = "Powered Descent and Landing Solver (Lunar Edition)"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,9 +12,9 @@ authors = [
     { name = "@angelet-dev" }
 ]
 dependencies = [
-    "numpy>=1.24.0",
-    "matplotlib>=3.5.0",
-    "numba>=0.57.0"
+    "matplotlib >= 3.11.2",
+    "numba>=0.67.0",
+    "numpy>=2.5.3",
 ]
 
 [project.urls]
