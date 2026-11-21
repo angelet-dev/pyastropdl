@@ -51,7 +51,7 @@ rocket_params = (66628, 0.00029903701260349804, 17644)  # (u_max, k, m_fuel)
 
 #### 🎬 Trajectory Animation
 
-[🔗 Watch Animation (MP4)](assets/video/st_ani_standard_llo_descent.mp4)
+![🔗 Watch Animation (GIF)](assets/video/st_ani_standard_llo_descent.gif)
 
 ---
 
@@ -96,7 +96,7 @@ rocket_params = (65848, 0.0002832545036049801, 15358)  # (u_max, k, m_fuel)
 
 #### 🎬 Trajectory Animation
 
-[🔗 Watch Animation (MP4)](assets/video/st_ani_heavy_cargo_low_twr.mp4)
+![🔗 Watch Animation (GIF)](assets/video/st_ani_heavy_cargo_low_twr.gif)
 
 ---
 
@@ -142,7 +142,7 @@ rocket_params = (98004, 0.0003892046614419574, 27900)  # (u_max, k, m_fuel)
 
 #### 🎬 Trajectory Animation
 
-[🔗 Watch Animation (MP4)](assets/video/st_ani_orbital_drop.mp4)
+![🔗 Watch Animation (GIF)](assets/video/st_ani_orbital_drop.gif)
 
 ---
 
