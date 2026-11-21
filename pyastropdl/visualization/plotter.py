@@ -28,7 +28,7 @@ class Plotter:
         self.wbphase = solver.wbphase 
 
         if self.ffphase is None or self.bphase is None:
-            raise ValueError("Crtitical error: Solver instance is missing phase data.")
+            raise ValueError("Critical error: Solver instance is missing phase data.")
 
         self.sim_engine = solver.sim_engine
         self.dt = solver.dt
@@ -89,7 +89,6 @@ class Plotter:
         fig.subplots_adjust(left=0.18)
         output_path = resolve_output_path(fname)
         fig.savefig(output_path, dpi=300)
-        plt.show()
 
     def plot_telemetry(self, fname: str = "telemetry.png") -> None:
         self._validate_phase_data()
@@ -144,7 +143,7 @@ class Plotter:
         fig.subplots_adjust(left=0.15)
         output_path = resolve_output_path(fname)
         fig.savefig(output_path, dpi=300)
-        plt.show()
+
 
     def plot_residuals(self, fname: str = "residuals.png") -> None:
         self._validate_residual_data()
@@ -193,7 +192,7 @@ class Plotter:
         fig.subplots_adjust(left=0.15)
         output_path = resolve_output_path(fname)
         fig.savefig(output_path, dpi=300)
-        plt.show()
+
 
     # def plot_final_vel_alt_func(self, fname: str = "final_func.png") -> None:
 
