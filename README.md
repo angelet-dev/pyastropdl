@@ -8,6 +8,38 @@
 The package is designed with a modular architecture using JIT compilation (Numba) and contains an advanced toolkit for visualizing phase trajectories and telemetry.
 
 ---
+## 🚀 See It in Action
+
+**Input** — define the boundary conditions and solve:
+
+```python
+import pyastropdl as pdl
+
+init_cond = [28877, -56, 102378]        # [m0, v0, h0]
+end_cond = [0, 0]                       # [v_tau, h_tau]
+rocket_params = (66628, 0.00029903701260349804, 17644) # (u_max, k, m_propellant)
+
+solver = pdl.Solver(init_cond, end_cond, rocket_params, sim_engine="static_g")
+solver.solve(dt=0.01)
+solver.print_results()
+``` 
+
+Output — optimal phase trajectory and terminal state:
+
+<p align="center">
+  <img src=".github/assets/plots/st_trj_standard_llo_descent.png" alt="Optimal phase trajectory" width="50%">
+</p>
+
+Same scenario with both gravity models:
+
+| Engine |	Ignition, t_s (s)	| Landing, tau (s) |
+| :--- | :---: | ---: |
+| static_g |	178.87 |	521.97 |
+| dynamic_g	| 196.98	| 530.47 |
+
+See full examples: with [static gravity](.github/Examples%20(static%20g).md) or [dynamic gravity](.github/Examples%20(dynamic%20g).md)
+
+---
 ## 📐 Mathematical Core & Numerical Methods
 
 The structure of the optimal control is derived via Pontryagin’s maximum principle.
@@ -140,10 +172,7 @@ animator.animate(fps=60, duration=15)
 ```
 
 ---
-## 📊 Examples
-Examples of the program output are available in the [Examples (static g).md](.github/Examples%20(static%20g).md) or [Examples (dynamic g).md](.github/Examples%20(dynamic%20g).md) file.
 
----
 ## 📂 Repository Structure
 ```text
 pyastropdl/
@@ -190,7 +219,7 @@ This repository contains a paper (in the `Paper/` directory) accompanying the **
 ---
 ## 🛠 Tech Stack
 *   **Core:** Python 3
-*   **Computation Engine:** NumPy, Numba (JIT).
+*   **Computation Engine:** NumPy, Numba (JIT-compilation).
 *   **Graphics:** Matplotlib.
   
 ---
